@@ -115,7 +115,7 @@ Wyniki powinny zawierać, następujące kolumny:
 
 ## Zadanie 7
 
-Wykrywaj serie trzech następujących po sobie przelewów wykonywanych pomiędzy dwiema osobami, o coraz większych kwotach zakończonych trzecim przelewem, który został odrzucony.
+Wykrywaj serie trzech następujących po sobie przelewów wykonywanych pomiędzy dwiema tymi samymi osobami, przy czym kwoty tych przelewów mają być coraz większe. Serie mają kończyć się trzecim przelewem, który jest odrzucony.
 
 Wyniki powinny zawierać następujące kolumny:
 
