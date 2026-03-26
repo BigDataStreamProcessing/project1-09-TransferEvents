@@ -5,27 +5,33 @@ Dane mają charakter przelewów bankowych.
 W strumieniu pojawiają się zdarzenia zgodne ze schematem `TransferEvent`.
 
 ```
-create json schema TransferEvent(category string, status string, sender string, recipient string, amount int, ets string, its string);
+create json schema TransferEvent(category string, status string, 
+       sender string, recipient string, amount int, ets string, its string);
 ```
 
-Każde zdarzenie związane z jest z wykonaniem pojedynczego przelewu przez określoną osobę.
+Każde zdarzenie związane z jest z wykonaniem pojedynczego przelewu 
+przez określoną osobę.
 
-Każde zdarzenie zawiera następujące informacje: czas przelewu, odbiorcę, nadawcę, kwotę, typ (np. jedzenie, pensja, rozrywka itd.) oraz status (odrzucony/zaakceptowany).
+Każde zdarzenie zawiera następujące informacje: czas przelewu, 
+odbiorcę, nadawcę, kwotę, typ (np. jedzenie, pensja, rozrywka itd.) 
+oraz status (odrzucony/zaakceptowany).
 
 Dane uzupełnione są o dwie etykiety czasowe.
 
 - Pierwsza (`ets`) związana jest z momentem wykonania przelewu.
-  Etykieta ta może się losowo spóźniać w stosunku do czasu systemowego maksymalnie do 30 sekund.
+  Etykieta ta może się losowo spóźniać w stosunku do czasu 
+  systemowego maksymalnie do 30 sekund.
 - Druga (`its`) związana jest z momentem rejestracji przelewu w systemie.
 
 # Opis atrybutów
 
-Atrybuty w każdym zdarzeniu zgodnym ze schematem `TransferEvent` mają następujące znaczenie:
+Atrybuty w każdym zdarzeniu zgodnym ze schematem `TransferEvent` 
+mają następujące znaczenie:
 
 - `ets` - czas wykonania przelewu 
 - `its` - czas rejestracji przelewu w systemie, 
-- `category` - kategoria przelewu ["Entertainment", "Salary", "Health", "Food"]
-- `status` - status przelewu ["Rejected", "Accepted"]
+- `category` - kategoria przelewu [`Entertainment`, `Salary`, `Health`, `Food`]
+- `status` - status przelewu [`Rejected`, `Accepted`]
 - `sender` - nadawca przelewu,
 - `recipient` - odbiorca przelewu,
 - `amount` - kwota przelewu
@@ -47,7 +53,8 @@ FROM TransferEvent#ext_timed(java.sql.Timestamp.valueOf(its).getTime(), 3 sec);
 
 ## Zadanie 1
 
-Utrzymuj informacje o średniej i maksymalnej kwocie transakcji dla poszczególnego odbiorcy w ciągu ostatniej minuty.
+Utrzymuj informacje o średniej i maksymalnej kwocie transakcji dla 
+poszczególnego odbiorcy zarejestrowanych w ciągu ostatniej minuty.
 
 Wyniki powinny zawierać następujące kolumny:
 
@@ -71,7 +78,9 @@ Wyniki powinny zawierać następujące kolumny:
 
 ## Zadanie 3
 
-Ograniczając się do przelewów odrzuconych, wykrywaj przypadki przelewów o kwocie maksymalnej dla poszczególnego odbiorcy w ciągu ostatniej minuty.
+Ograniczając się do przelewów odrzuconych, wykrywaj przypadki 
+przelewów o kwocie maksymalnej dla poszczególnego odbiorcy 
+zarejestrowanych w ciągu ostatniej minuty.
 
 Wyniki powinny zawierać następujące kolumny:
 
@@ -81,8 +90,11 @@ Wyniki powinny zawierać następujące kolumny:
 
 ## Zadanie 4
 
-Urząd skarbowy bardzo martwi się o obywateli i nie chciałby dopuścić do sytuacji, aby ktoś z powodu długów musiał zaciągać pożyczki. 
-Dlatego postanowił na bieżąco monitorować wydatki i przychody osób oraz sprawdzać, kiedy wydatki przewyższają przychody.
+Urząd skarbowy bardzo martwi się o obywateli i nie chciałby 
+dopuścić do sytuacji, aby ktoś z powodu długów musiał zaciągać pożyczki. 
+Dlatego postanowił na bieżąco monitorować wydatki i przychody 
+osób oraz sprawdzać, kiedy sumaryczne wydatki przewyższają sumaryczne przychody,
+licząc od początku działania systemu.
 
 Wyniki powinny zawierać, następujące kolumny:
 
@@ -92,30 +104,43 @@ Wyniki powinny zawierać, następujące kolumny:
 
 ## Zadanie 5
 
-Analitycy bankowi wykryli, że duże przelewy będące oszustwami poprzedzane są serią mniejszych przelewów.
-Wykrywaj serie co najmniej trzech przelewów z tego samego konta o wartości nieprzekraczającej 50, zakończonych przelewem na kwotę powyżej 500. Aby seria była oszustwem, musi trwać nie dłużej niż 1 minutę.
+Analitycy bankowi wykryli, że duże przelewy będące oszustwami 
+poprzedzane są serią mniejszych przelewów.
+Wykrywaj serie co najmniej trzech przelewów z tego samego konta 
+o wartości nieprzekraczającej 50, zakończonych przelewem na kwotę 
+powyżej 500. Aby seria była oszustwem, musi trwać nie dłużej niż 1 minutę.
 
 Wyniki powinny zawierać, następujące kolumny:
 
 - `sender` - nadawca oraz
-- `start_mount` - kwota pierwszego przelewu w serii, 
+- `start_amount` - kwota pierwszego przelewu w serii, 
 - `end_amount` - kwota ostatniego przelewu w serii. 
 
 
 ## Zadanie 6
 
-W okresie plagi oszustw bank postanowił wykrywać powtarzające się transakcje w krótkim odstępie czasu na wysoką kwotę pomiędzy takimi samymi parami osób
-Wykrywaj przypadki trzech następujących po sobie (niekonieczne bezpośrednio) przelewów, w których osoba A przelewa osobie B dużą kwotę w ciągu 10 sekund a w tym samym czasie osoba B ani nie dokonała żadnego przelewu osobie A.
+W okresie plagi oszustw bank postanowił wykrywać podejrzane serie
+przelewów — czyli przypadki, gdy jedna osoba wielokrotnie
+w krótkim czasie przesyła wysokie kwoty tej samej osobie,
+podczas gdy ta druga nie odpowiada żadnym przelewem zwrotnym.
+
+Wykrywaj przypadki trzech następujących po sobie (niekoniecznie
+bezpośrednio) przelewów, w których osoba A przelewa osobie B
+kwotę powyżej 500, i wszystkie trzy przelewy zostały zarejestrowane
+w ciągu 10 sekund. W tym czasie osoba B nie może dokonać
+żadnego przelewu do osoby A.
 
 Wyniki powinny zawierać, następujące kolumny:
-
-- `senderA` - nadawca oraz
-- `recipientB` - odbiorca oraz
-- `total_amount` - suma kwot trzech przelewów między osobą A i B.
+- `senderA` - nadawca
+- `recipientB` - odbiorca
+- `total_amount` - suma kwot trzech przelewów od osoby A do osoby B
 
 ## Zadanie 7
 
-Wykrywaj serie trzech następujących po sobie przelewów wykonywanych pomiędzy dwiema tymi samymi osobami, przy czym kwoty tych przelewów mają być coraz większe. Serie mają kończyć się trzecim przelewem, który jest odrzucony.
+Wykrywaj serie trzech następujących po sobie przelewów wykonywanych 
+pomiędzy dwiema tymi samymi osobami, przy czym kwoty tych przelewów 
+mają być coraz większe. Serie mają kończyć się trzecim przelewem, 
+który jest odrzucony.
 
 Wyniki powinny zawierać następujące kolumny:
 
