@@ -100,7 +100,7 @@ Wyniki powinny zawierać, następujące kolumny:
 
 - `expenses` - sumę wydatków
 - `incomes` - sumę przychodów
-- `sender` - osoba
+- `person` - osoba
 
 ## Zadanie 5
 
